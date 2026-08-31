@@ -1,5 +1,12 @@
+/**
+ * FEATURES:
+ * - Protected dashboard home — redirects to /login if not authenticated
+ * - Now links to the resume upload page (Phase 2)
+ * - Pipeline stat cards remain placeholders until job matching (Phase 3+)
+ */
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { FlightPath } from "@/components/flight-path";
 import { SignOutButton } from "@/components/sign-out-button";
 
@@ -16,10 +23,18 @@ export default async function DashboardPage() {
             Welcome, {session.user.name}
           </h1>
           <p className="text-ink-muted text-sm mt-1">
-            Phase 1 checkpoint: auth and database are wired up. Matches will land here next.
+            Phase 2 checkpoint: resume upload and AI parsing are live. Matches come next.
           </p>
         </div>
-        <SignOutButton />
+        <div className="flex items-center gap-4">
+          <Link
+            href="/dashboard/resume"
+            className="rounded-lg bg-ink text-white text-sm font-medium px-4 py-2 hover:bg-ink/90 transition"
+          >
+            Manage resume
+          </Link>
+          <SignOutButton />
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">

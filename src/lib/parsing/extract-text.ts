@@ -1,21 +1,21 @@
 /**
  * FEATURES:
  * - Extracts raw plain text from an uploaded resume file buffer
- * - Supports PDF (via pdf-parse v2's class-based API) and DOCX (via mammoth)
+ * - Supports PDF (via pdf-parse@1.1.1) and DOCX (via mammoth)
  * - Throws a descriptive error for unsupported file types
+ * - CHANGED: pinned to pdf-parse@1.1.1 instead of the v2 class-based API.
+ *   v2 depends on pdfjs-dist's worker thread (pdf.worker.mjs), which
+ *   Next.js's bundler doesn't place where pdfjs expects it, causing
+ *   "Setting up fake worker failed" at runtime. v1 parses PDFs directly
+ *   in Node with no worker involved, so this sidesteps the issue entirely.
  */
 export async function extractTextFromFile(buffer: Buffer, fileName: string): Promise<string> {
   const ext = fileName.toLowerCase().split(".").pop();
 
   if (ext === "pdf") {
-    const { PDFParse } = await import("pdf-parse");
-    const parser = new PDFParse({ data: buffer });
-    try {
-      const result = await parser.getText();
-      return result.text;
-    } finally {
-      await parser.destroy();
-    }
+    const pdfParse = (await import("pdf-parse")).default;
+    const result = await pdfParse(buffer);
+    return result.text;
   }
 
   if (ext === "docx") {
