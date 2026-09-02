@@ -1,1 +1,0 @@
-ALTER TABLE `preferences` ADD `listing_type` text DEFAULT 'BOTH';

@@ -1,19 +1,12 @@
 {
   "version": "7",
-  "dialect": "sqlite",
+  "dialect": "postgresql",
   "entries": [
     {
       "idx": 0,
-      "version": "6",
-      "when": 1788170691653,
-      "tag": "0000_clear_lorna_dane",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1788296795569,
-      "tag": "0001_redundant_wolfsbane",
+      "version": "7",
+      "when": 1788323162335,
+      "tag": "0000_cultured_sunspot",
       "breakpoints": true
     }
   ]

@@ -7,3 +7,4 @@ dev.db-wal
 .env.local.example
 *.log
 uploads
+.env
