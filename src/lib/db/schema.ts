@@ -29,6 +29,7 @@ export const resumes = sqliteTable("resumes", {
 export const preferences = sqliteTable("preferences", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().unique().references(() => users.id, { onDelete: "cascade" }),
+  listingType: text("listing_type", { enum: ["INTERNSHIP", "JOB", "BOTH"] }).default("BOTH"),
   roles: text("roles", { mode: "json" }).$type<string[]>().default(sql`'[]'`),
   industries: text("industries", { mode: "json" }).$type<string[]>().default(sql`'[]'`),
   locations: text("locations", { mode: "json" }).$type<string[]>().default(sql`'[]'`),

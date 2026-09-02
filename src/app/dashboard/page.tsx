@@ -1,8 +1,8 @@
 /**
  * FEATURES:
  * - Protected dashboard home — redirects to /login if not authenticated
- * - Now links to the resume upload page (Phase 2)
- * - Pipeline stat cards remain placeholders until job matching (Phase 3+)
+ * - Links to resume upload and the new jobs search/matches page
+ * - Pipeline stat cards remain placeholders for now
  */
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -23,15 +23,21 @@ export default async function DashboardPage() {
             Welcome, {session.user.name}
           </h1>
           <p className="text-ink-muted text-sm mt-1">
-            Phase 2 checkpoint: resume upload and AI parsing are live. Matches come next.
+            Upload your resume, then search for internships and see AI-scored matches.
           </p>
         </div>
         <div className="flex items-center gap-4">
           <Link
             href="/dashboard/resume"
+            className="text-sm font-medium text-ink hover:text-accent-deep transition"
+          >
+            Resume
+          </Link>
+          <Link
+            href="/dashboard/jobs"
             className="rounded-lg bg-ink text-white text-sm font-medium px-4 py-2 hover:bg-ink/90 transition"
           >
-            Manage resume
+            Find internships
           </Link>
           <SignOutButton />
         </div>

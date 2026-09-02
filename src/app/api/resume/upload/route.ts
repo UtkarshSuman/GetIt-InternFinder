@@ -4,24 +4,18 @@
  * - Auth-gated: rejects if there's no signed-in session
  * - Saves the raw file to disk under /uploads/{userId}/ (outside /public,
  *   so it's never served directly — only via the authenticated file route)
- * - Extracts text, parses it into structured JSON via local Ollama, and
- *   generates an embedding for later job-matching
+ * - Extracts text and parses it into structured JSON via Groq (cloud,
+ *   free tier — works on Vercel, unlike the old local-Ollama approach)
  * - Stores everything in the resumes table
- * - If Ollama parsing fails (e.g. not running), the file is still saved and
- *   a resume row is still created with parsedJson: null, so the upload
- *   isn't lost — the error is returned so the UI can explain what to do
- * - CHANGED: the whole handler is now wrapped in try/catch. Previously an
- *   unexpected server error (e.g. a disk write failure) would crash into
- *   Next's HTML error page, and the client's res.json() call on that HTML
- *   would throw "unexpected character at line 1 column 1". Now any error
- *   always comes back as valid JSON with a real message.
+ * - Whole handler wrapped in try/catch so any failure returns real JSON,
+ *   never an HTML error page that breaks the client's response parsing
  */
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { resumes } from "@/lib/db/schema";
 import { extractTextFromFile } from "@/lib/parsing/extract-text";
-import { parseResumeText, embedText } from "@/lib/ai/ollama";
+import { parseResumeText } from "@/lib/ai/groq";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 
@@ -63,7 +57,6 @@ export async function POST(req: Request) {
     let parsedJson = null;
     let skills: string[] = [];
     let experienceYears: number | null = null;
-    let embedding: number[] | null = null;
 
     try {
       const text = await extractTextFromFile(buffer, file.name);
@@ -71,7 +64,6 @@ export async function POST(req: Request) {
       parsedJson = parsed;
       skills = parsed.skills ?? [];
       experienceYears = parsed.experienceYears ?? null;
-      embedding = await embedText(text);
     } catch (err) {
       parseError = err instanceof Error ? err.message : "Failed to parse resume.";
       console.error("[resume/upload] parsing step failed:", err);
@@ -86,7 +78,6 @@ export async function POST(req: Request) {
         parsedJson,
         skills,
         experienceYears,
-        embedding,
       })
       .returning();
 
