@@ -5,7 +5,7 @@
  * - Shows live upload/parsing status, then displays the AI-extracted
  *   skills, experience years, education, and projects once parsing
  *   completes
- * - Surfaces a clear warning banner (not a hard failure) if Ollama parsing
+ * - Surfaces a clear warning banner (not a hard failure) if Groq parsing
  *   didn't complete, since the file itself still uploaded successfully
  * - Fetches and displays the most recent resume on page load, so refreshing
  *   doesn't lose state
@@ -60,7 +60,7 @@ export default function ResumePage() {
   }, []);
 
   useEffect(() => {
-    loadCurrent();
+    void Promise.resolve().then(loadCurrent);
   }, [loadCurrent]);
 
 
@@ -108,7 +108,7 @@ export default function ResumePage() {
         </Link>
       </div>
       <p className="text-ink-muted text-sm mb-8">
-        Upload a PDF or DOCX. It's parsed locally by Ollama — nothing leaves your machine.
+        Upload a PDF or DOCX. The file is saved privately, then parsed with Groq.
       </p>
 
       <div
@@ -239,7 +239,7 @@ export default function ResumePage() {
             </div>
           ) : (
             <p className="text-sm text-ink-muted border-t border-line pt-4">
-              File saved, but AI parsing hasn't completed yet. Make sure Ollama is running and
+              File saved, but AI parsing has not completed yet. Check your Groq API key and
               re-upload.
             </p>
           )}

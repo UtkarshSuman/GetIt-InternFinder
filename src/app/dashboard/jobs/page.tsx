@@ -81,8 +81,10 @@ export default function JobsPage() {
   }, []);
 
   useEffect(() => {
-    loadMatches();
-    loadPreferences();
+    void Promise.resolve().then(() => {
+      void loadMatches();
+      void loadPreferences();
+    });
   }, [loadMatches, loadPreferences]);
 
   async function handleSearch(e: React.FormEvent) {
